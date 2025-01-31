@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Note } from '../entities/Note';
 import { NoteNotFoundException } from '../exceptions/NoteNotFound';
-import { NoteRepository } from '../repository/noteRepository';
+import { TasksRepository } from '../repository/tasksRepository';
 
 interface NoteProps {
   user_id: string;
@@ -20,9 +20,9 @@ interface NoteUpdateProps {
 }
 
 @Injectable()
-export class NoteUseCase {
+export class TasksUseCase {
   constructor(
-    private noteRepository: NoteRepository,
+    private tasksRepository: TasksRepository,
   ) {}
 
   async create({ note, title, description, user_id, user_email }: NoteProps) {
@@ -32,19 +32,19 @@ export class NoteUseCase {
       title,
       user_id,
     });
-    const createNote = await this.noteRepository.upsert(notes);
+    const createNote = await this.tasksRepository.upsert(notes);
 
     return createNote;
   }
 
   async findAll(user_id: string) {
-    const allNotes = await this.noteRepository.findAll(user_id);
+    const allNotes = await this.tasksRepository.findAll(user_id);
 
     return allNotes;
   }
 
   async findOne(id: string) {
-    const note = await this.noteRepository.findById(id);
+    const note = await this.tasksRepository.findById(id);
 
     if (!note) throw new NoteNotFoundException();
 
@@ -58,11 +58,11 @@ export class NoteUseCase {
     description,
     user_id,
   }: NoteUpdateProps): Promise<Note | undefined> {
-    const existNote = await this.noteRepository.findById(id);
+    const existNote = await this.tasksRepository.findById(id);
 
     if (!existNote) throw new NoteNotFoundException();
 
-    const updateNote = await this.noteRepository.upsert({
+    const updateNote = await this.tasksRepository.upsert({
       user_id,
       id,
       note,
@@ -74,10 +74,10 @@ export class NoteUseCase {
   }
 
   async delete(id: string) {
-    const existNote = await this.noteRepository.findById(id);
+    const existNote = await this.tasksRepository.findById(id);
 
     if (!existNote) throw new NoteNotFoundException();
 
-    return this.noteRepository.delete(id);
+    return this.tasksRepository.delete(id);
   }
 }

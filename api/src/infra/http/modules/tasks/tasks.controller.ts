@@ -9,14 +9,14 @@ import {
   Put,
   Request,
 } from '@nestjs/common';
-import { NoteUseCase } from 'src/modules/note/useCase/noteUseCase';
+import { TasksUseCase } from 'src/modules/tasks/useCase/tasksUseCase';
 import { NoteBody } from './dtos/noteBody';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('notes')
 @Controller('notes')
-export class NoteController {
-  constructor(private noteUseCase: NoteUseCase) {}
+export class TasksController {
+  constructor(private tasksUseCase: TasksUseCase) {}
 
   @Post()
   async createNote(
@@ -25,7 +25,7 @@ export class NoteController {
   ) {
     const { note, title, description } = body;
 
-    return this.noteUseCase.create({
+    return this.tasksUseCase.create({
       user_id: req.user.id,
       user_email: req.user.email,
       note,
@@ -38,12 +38,12 @@ export class NoteController {
   async getAll(@Request() req) {
     const user_id = req.user.id;
 
-    return this.noteUseCase.findAll(user_id);
+    return this.tasksUseCase.findAll(user_id);
   }
 
   @Get(':id')
   async getOne(@Param('id') id: string) {
-    return this.noteUseCase.findOne(id);
+    return this.tasksUseCase.findOne(id);
   }
 
   @Put(':id')
@@ -55,7 +55,7 @@ export class NoteController {
     const { note, title, description } = body;
     const user_id = req.user.id;
 
-    return this.noteUseCase.update({
+    return this.tasksUseCase.update({
       user_id,
       id,
       note,
@@ -66,6 +66,6 @@ export class NoteController {
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    return this.noteUseCase.delete(id);
+    return this.tasksUseCase.delete(id);
   }
 }

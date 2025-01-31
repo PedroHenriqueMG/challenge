@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './infra/database/database.module';
-import { NoteModule } from './infra/http/modules/note/note.module';
+import { TasksModule } from './infra/http/modules/tasks/tasks.module';
 @Module({
   imports: [
     DatabaseModule,
-    NoteModule,
+    TasksModule,
   ],
   controllers: [],
 })

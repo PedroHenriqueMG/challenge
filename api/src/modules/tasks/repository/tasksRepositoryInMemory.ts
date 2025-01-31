@@ -1,7 +1,7 @@
 import { Note } from '../entities/Note';
-import { NoteRepository } from './noteRepository';
+import { TasksRepository } from './tasksRepository';
 
-export class NoteRepositoryInMemory implements NoteRepository {
+export class TasksRepositoryInMemory implements TasksRepository {
   public notes: Note[] = [];
 
   async upsert(note: Note): Promise<Note | undefined> {

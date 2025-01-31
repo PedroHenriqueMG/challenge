@@ -1,4 +1,4 @@
-import { Note } from 'src/modules/note/entities/Note';
+import { Note } from 'src/modules/tasks/entities/Note';
 
 export class PrismaNotesMapper {
   static toCreate({ description, id, note, title, user_id }: Note) {

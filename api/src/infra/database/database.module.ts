@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-import { NoteRepository } from 'src/modules/note/repository/noteRepository';
+import { TasksRepository } from 'src/modules/tasks/repository/tasksRepository';
 import { PrismaService } from './prisma/prisma.service';
-import { PrismaNoteRepository } from './prisma/repositories/note/PrismaNoteRepository';
+import { PrismaTasksRepository } from './prisma/repositories/tasks/PrismaTaskRepository';
 
 @Module({
   providers: [
     PrismaService,
     {
-      provide: NoteRepository,
-      useClass: PrismaNoteRepository,
+      provide: TasksRepository,
+      useClass: PrismaTasksRepository,
     },
   ],
-  exports: [NoteRepository],
+  exports: [TasksRepository],
 })
 export class DatabaseModule {}

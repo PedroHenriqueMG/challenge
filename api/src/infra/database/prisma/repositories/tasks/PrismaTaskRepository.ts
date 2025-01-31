@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { Note } from 'src/modules/note/entities/Note';
+import { Note } from 'src/modules/tasks/entities/Note';
 import { PrismaNotesMapper } from '../../mappers/notes/PrismaNotesMapper';
 import { PrismaService } from '../../prisma.service';
 
 @Injectable()
-export class PrismaNoteRepository {
+export class PrismaTasksRepository {
   constructor(private prisma: PrismaService) {}
   async upsert(notes: Note) {
     const noteRaw = PrismaNotesMapper.toCreate(notes);
 
-    const createNote = await this.prisma.note.upsert({
+    const createNote = await this.prisma.tasks.upsert({
       where: {
         id: noteRaw.id,
       },
@@ -31,7 +31,7 @@ export class PrismaNoteRepository {
   }
 
   async findAll(user_id: string) {
-    const allNotes = await this.prisma.note.findMany({
+    const allNotes = await this.prisma.tasks.findMany({
       where: {
         user_id: user_id,
       },
@@ -41,7 +41,7 @@ export class PrismaNoteRepository {
   }
 
   async findById(id: string) {
-    const note = await this.prisma.note.findUnique({
+    const note = await this.prisma.tasks.findUnique({
       where: {
         id: id,
       },
@@ -51,7 +51,7 @@ export class PrismaNoteRepository {
   }
 
   async delete(id: string) {
-    const deleteNote = await this.prisma.note.delete({
+    const deleteNote = await this.prisma.tasks.delete({
       where: {
         id: id,
       },
