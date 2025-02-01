@@ -1,22 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Stage } from '@prisma/client';
 import { IsNotEmptyCustom } from 'src/infra/http/classValidator/decorators/IsNotEmptyCustom';
 
-export class NoteBody {
+export class TaskBody {
   @IsNotEmptyCustom()
   @ApiProperty()
   title: string;
 
-  @ApiProperty({ required: false })
-  description: string;
-
   @IsNotEmptyCustom()
   @ApiProperty()
-  note: string;
+  description: string;
 }
 
-export class NoteUpdateBody {
-  id: string;
+export class TaskUpdateBody {
   title: string;
-  description?: string;
-  note: string;
+  description: string;
+  stage: Stage;
 }

@@ -13,7 +13,7 @@ enum Stage {
   Done
 }
 
-model Tasks {
+model TasksModel {
   id           String   @id
   title        String
   description  String

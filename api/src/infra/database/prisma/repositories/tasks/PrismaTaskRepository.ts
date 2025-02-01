@@ -1,47 +1,41 @@
 import { Injectable } from '@nestjs/common';
-import { Note } from 'src/modules/tasks/entities/Note';
-import { PrismaNotesMapper } from '../../mappers/notes/PrismaNotesMapper';
+import { Tasks } from 'src/modules/tasks/entities/Tasks';
+import { PrismaTasksMapper } from '../../mappers/tasks/PrismaTasksMapper';
 import { PrismaService } from '../../prisma.service';
 
 @Injectable()
 export class PrismaTasksRepository {
   constructor(private prisma: PrismaService) {}
-  async upsert(notes: Note) {
-    const noteRaw = PrismaNotesMapper.toCreate(notes);
+  async upsert(tasks: Tasks) {
+    const tasksRaw = PrismaTasksMapper.toCreate(tasks);
 
-    const createNote = await this.prisma.tasks.upsert({
+    const createTaks = await this.prisma.tasksModel.upsert({
       where: {
-        id: noteRaw.id,
+        id: tasksRaw.id,
       },
       update: {
-        title: noteRaw.title,
-        description: noteRaw.description,
-        note: noteRaw.note,
+        title: tasksRaw.title,
+        description: tasksRaw.description,
       },
       create: {
-        id: noteRaw.id,
-        user_id: noteRaw.user_id,
-        title: noteRaw.title,
-        note: noteRaw.note,
-        description: noteRaw.description,
+        id: tasksRaw.id,
+        title: tasksRaw.title,
+        description: tasksRaw.description,
+        stage: tasksRaw.stage,
       },
     });
 
-    return createNote;
+    return createTaks;
   }
 
-  async findAll(user_id: string) {
-    const allNotes = await this.prisma.tasks.findMany({
-      where: {
-        user_id: user_id,
-      },
-    });
+  async findAll() {
+    const allTasks = await this.prisma.tasksModel.findMany();
 
-    return allNotes;
+    return allTasks;
   }
 
   async findById(id: string) {
-    const note = await this.prisma.tasks.findUnique({
+    const note = await this.prisma.tasksModel.findUnique({
       where: {
         id: id,
       },
@@ -51,7 +45,7 @@ export class PrismaTasksRepository {
   }
 
   async delete(id: string) {
-    const deleteNote = await this.prisma.tasks.delete({
+    const deleteNote = await this.prisma.tasksModel.delete({
       where: {
         id: id,
       },

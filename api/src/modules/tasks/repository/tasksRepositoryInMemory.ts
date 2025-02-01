@@ -1,10 +1,10 @@
-import { Note } from '../entities/Note';
+import { Tasks } from '../entities/Tasks';
 import { TasksRepository } from './tasksRepository';
 
 export class TasksRepositoryInMemory implements TasksRepository {
-  public notes: Note[] = [];
+  public notes: Tasks[] = [];
 
-  async upsert(note: Note): Promise<Note | undefined> {
+  async upsert(note: Tasks): Promise<Tasks | undefined> {
     const index = this.notes.findIndex((n) => n.id === note.id);
 
     if (index !== -1) {
@@ -16,14 +16,14 @@ export class TasksRepositoryInMemory implements TasksRepository {
     return note;
   }
 
-  async findById(id: string): Promise<Note | null> {
+  async findById(id: string): Promise<Tasks | null> {
     const note = this.notes.find((note) => note.id === id);
 
     return note || null;
   }
 
-  async findAll(user_id: string): Promise<Note[]> {
-    const notes = this.notes.filter((n) => n.user_id === user_id);
+  async findAll(): Promise<Tasks[]> {
+    const notes = this.notes;
 
     return notes;
   }

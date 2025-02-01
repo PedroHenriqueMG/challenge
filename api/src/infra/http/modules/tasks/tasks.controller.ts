@@ -3,69 +3,62 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
-  ParseIntPipe,
+  Patch,
   Post,
-  Put,
-  Request,
+  Request
 } from '@nestjs/common';
-import { TasksUseCase } from 'src/modules/tasks/useCase/tasksUseCase';
-import { NoteBody } from './dtos/noteBody';
 import { ApiTags } from '@nestjs/swagger';
+import { TasksUseCase } from 'src/modules/tasks/useCase/tasksUseCase';
+import { TaskBody, TaskUpdateBody } from './dtos/taskBody';
 
-@ApiTags('notes')
-@Controller('notes')
+@ApiTags('tasks')
+@Controller('api/tasks')
 export class TasksController {
   constructor(private tasksUseCase: TasksUseCase) {}
 
   @Post()
-  async createNote(
-    @Body() body: NoteBody,
-    @Request() req,
+  async create(
+    @Body() body: TaskBody,
   ) {
-    const { note, title, description } = body;
+    const { title, description } = body;
 
-    return this.tasksUseCase.create({
-      user_id: req.user.id,
-      user_email: req.user.email,
-      note,
+    return await this.tasksUseCase.create({
       title,
       description,
     });
   }
 
   @Get()
-  async getAll(@Request() req) {
-    const user_id = req.user.id;
+  async getAll() {
 
-    return this.tasksUseCase.findAll(user_id);
+    return await this.tasksUseCase.findAll();
   }
 
   @Get(':id')
   async getOne(@Param('id') id: string) {
-    return this.tasksUseCase.findOne(id);
+    return await this.tasksUseCase.findOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   async update(
-    @Body() body: NoteBody,
+    @Body() body: TaskUpdateBody,
     @Param('id') id: string,
-    @Request() req,
   ) {
-    const { note, title, description } = body;
-    const user_id = req.user.id;
+    const { title, description, stage } = body;
 
-    return this.tasksUseCase.update({
-      user_id,
+    return await this.tasksUseCase.update({
       id,
-      note,
       title,
       description,
+      stage,
     });
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async delete(@Param('id') id: string) {
-    return this.tasksUseCase.delete(id);
+    await this.tasksUseCase.delete(id);
   }
 }

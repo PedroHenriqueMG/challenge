@@ -1,22 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { Note } from '../entities/Note';
-import { NoteNotFoundException } from '../exceptions/NoteNotFound';
+import { Tasks } from '../entities/Tasks';
+import { TaskNotFoundException } from '../exceptions/TaskNotFound';
 import { TasksRepository } from '../repository/tasksRepository';
+import { Stage } from '@prisma/client';
 
-interface NoteProps {
-  user_id: string;
-  user_email: string;
+interface TasksProps {
   title: string;
-  description?: string;
-  note: string;
+  description: string;
 }
 
-interface NoteUpdateProps {
+interface TasksUpdateProps {
   id: string;
-  user_id: string;
   title: string;
-  description?: string;
-  note: string;
+  description: string;
+  stage: Stage
 }
 
 @Injectable()
@@ -25,50 +22,48 @@ export class TasksUseCase {
     private tasksRepository: TasksRepository,
   ) {}
 
-  async create({ note, title, description, user_id, user_email }: NoteProps) {
-    const notes = new Note({
+  async create({ title, description }: TasksProps) {
+    const task = new Tasks({
       description,
-      note,
       title,
-      user_id,
     });
-    const createNote = await this.tasksRepository.upsert(notes);
+    const createTask = await this.tasksRepository.upsert(task);
 
-    return createNote;
+    return createTask;
   }
 
-  async findAll(user_id: string) {
-    const allNotes = await this.tasksRepository.findAll(user_id);
+  async findAll() {
+    const allTasks = await this.tasksRepository.findAll();
 
-    return allNotes;
+    return allTasks;
   }
 
   async findOne(id: string) {
     const note = await this.tasksRepository.findById(id);
 
-    if (!note) throw new NoteNotFoundException();
+    if (!note) throw new TaskNotFoundException();
 
     return note;
   }
 
   async update({
     id,
-    note,
     title,
     description,
-    user_id,
-  }: NoteUpdateProps): Promise<Note | undefined> {
+    stage,
+  }: TasksUpdateProps): Promise<Tasks | undefined> {
     const existNote = await this.tasksRepository.findById(id);
 
-    if (!existNote) throw new NoteNotFoundException();
+    if (!existNote) throw new TaskNotFoundException();
 
-    const updateNote = await this.tasksRepository.upsert({
-      user_id,
+    const task = new Tasks({
       id,
-      note,
       title,
       description,
+      stage,
     });
+
+    const updateNote = await this.tasksRepository.upsert(task);
 
     return updateNote;
   }
@@ -76,7 +71,7 @@ export class TasksUseCase {
   async delete(id: string) {
     const existNote = await this.tasksRepository.findById(id);
 
-    if (!existNote) throw new NoteNotFoundException();
+    if (!existNote) throw new TaskNotFoundException();
 
     return this.tasksRepository.delete(id);
   }

@@ -1,8 +1,8 @@
-import { Note } from '../entities/Note';
+import { Tasks } from '../entities/Tasks';
 
 export abstract class TasksRepository {
-  abstract upsert(note): Promise<Note | undefined>;
-  abstract findById(id: string): Promise<Note | null>;
-  abstract findAll(user_id: string): Promise<Note[]>;
+  abstract upsert(note: Tasks): Promise<Tasks | undefined>;
+  abstract findById(id: string): Promise<Tasks | null>;
+  abstract findAll(): Promise<Tasks[]>;
   abstract delete(id: string): Promise<null>;
 }
