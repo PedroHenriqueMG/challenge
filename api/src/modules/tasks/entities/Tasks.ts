@@ -6,7 +6,14 @@ interface TasksProps {
   id?: string;
   title: string;
   description: string;
+  position: number;
   stage?: Stage;
+}
+
+export interface TaskUpdateProps {
+  id: string;
+  stage: Stage;
+  position: number;
 }
 
 export class Tasks {
@@ -32,6 +39,14 @@ export class Tasks {
 
   set title(title: string) {
     this.props.title = title;
+  }
+
+  get position() {
+    return this.props.position;
+  }
+
+  set position(position: number) {
+    this.props.position = position;
   }
 
   get description() {

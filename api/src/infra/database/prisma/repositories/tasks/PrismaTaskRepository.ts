@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Tasks } from 'src/modules/tasks/entities/Tasks';
+import { Tasks, TaskUpdateProps } from 'src/modules/tasks/entities/Tasks';
 import { PrismaTasksMapper } from '../../mappers/tasks/PrismaTasksMapper';
 import { PrismaService } from '../../prisma.service';
 
@@ -22,6 +22,7 @@ export class PrismaTasksRepository {
         title: tasksRaw.title,
         description: tasksRaw.description,
         stage: tasksRaw.stage,
+        position: tasksRaw.position,
       },
     });
 
@@ -42,6 +43,18 @@ export class PrismaTasksRepository {
     });
 
     return note;
+  }
+
+  async updateTaskStage(task: TaskUpdateProps): Promise<void> {
+    await this.prisma.tasksModel.update({
+      where: {
+        id: task.id,
+      },
+      data: {
+        stage: task.stage,
+        position: task.position,
+      },
+    });
   }
 
   async delete(id: string) {

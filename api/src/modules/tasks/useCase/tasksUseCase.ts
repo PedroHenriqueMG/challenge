@@ -7,25 +7,26 @@ import { Stage } from '@prisma/client';
 interface TasksProps {
   title: string;
   description: string;
+  position: number;
 }
 
 interface TasksUpdateProps {
   id: string;
   title: string;
+  position: number;
   description: string;
-  stage: Stage
+  stage: Stage;
 }
 
 @Injectable()
 export class TasksUseCase {
-  constructor(
-    private tasksRepository: TasksRepository,
-  ) {}
+  constructor(private tasksRepository: TasksRepository) {}
 
-  async create({ title, description }: TasksProps) {
+  async create({ title, description, position }: TasksProps) {
     const task = new Tasks({
       description,
       title,
+      position,
     });
     const createTask = await this.tasksRepository.upsert(task);
 
@@ -51,6 +52,7 @@ export class TasksUseCase {
     title,
     description,
     stage,
+    position,
   }: TasksUpdateProps): Promise<Tasks | undefined> {
     const existNote = await this.tasksRepository.findById(id);
 
@@ -61,6 +63,7 @@ export class TasksUseCase {
       title,
       description,
       stage,
+      position,
     });
 
     const updateNote = await this.tasksRepository.upsert(task);
