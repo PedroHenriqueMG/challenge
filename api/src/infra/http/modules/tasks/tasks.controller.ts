@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  Request
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TasksUseCase } from 'src/modules/tasks/useCase/tasksUseCase';
@@ -19,20 +18,18 @@ export class TasksController {
   constructor(private tasksUseCase: TasksUseCase) {}
 
   @Post()
-  async create(
-    @Body() body: TaskBody,
-  ) {
-    const { title, description } = body;
+  async create(@Body() body: TaskBody) {
+    const { title, description, position } = body;
 
     return await this.tasksUseCase.create({
       title,
+      position,
       description,
     });
   }
 
   @Get()
   async getAll() {
-
     return await this.tasksUseCase.findAll();
   }
 
@@ -42,15 +39,13 @@ export class TasksController {
   }
 
   @Patch(':id')
-  async update(
-    @Body() body: TaskUpdateBody,
-    @Param('id') id: string,
-  ) {
-    const { title, description, stage } = body;
+  async update(@Body() body: TaskUpdateBody, @Param('id') id: string) {
+    const { title, description, stage, position } = body;
 
     return await this.tasksUseCase.update({
       id,
       title,
+      position,
       description,
       stage,
     });

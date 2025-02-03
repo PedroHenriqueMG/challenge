@@ -21,11 +21,11 @@ export class Tasks {
   private _id: string;
   private _stage: Stage;
 
-  constructor(props: Replace<TasksProps, {}>, id?: string) {
+  constructor(props: Replace<TasksProps, {}>) {
     this.props = {
       ...props,
     };
-    this._id = id || randomUUID();
+    this._id = this.props.id || randomUUID();
     this._stage = this.props.stage || Stage.To_Do;
   }
 

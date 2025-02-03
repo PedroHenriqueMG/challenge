@@ -9,8 +9,21 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TasksRepository } from '../repository/tasksRepository';
+import { Stage } from '@prisma/client';
 
-@WebSocketGateway()
+interface PayloadSocket {
+  stage: Stage;
+  position: number;
+  taskId: string;
+}
+
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+})
 export class TasksGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
@@ -20,15 +33,11 @@ export class TasksGateway
   private logger: Logger = new Logger('TasksGateway');
 
   @SubscribeMessage('update task stage')
-  handleMessage(client: Socket, payload: string): void {
-    this.server.on('update task stage', (data) => {
-      const { stage, position, taskId } = data;
-
-      this.tasksRepository.updateTaskStage({
-        id: taskId,
-        stage,
-        position,
-      });
+  async handleMessage(client: Socket, payload: PayloadSocket): Promise<void> {
+    await this.tasksRepository.updateTaskStage({
+      id: payload.taskId,
+      stage: payload.stage,
+      position: payload.position,
     });
   }
 

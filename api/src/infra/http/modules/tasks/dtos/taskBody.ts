@@ -10,10 +10,14 @@ export class TaskBody {
   @IsNotEmptyCustom()
   @ApiProperty()
   description: string;
+
+  @IsNotEmptyCustom()
+  position: number;
 }
 
 export class TaskUpdateBody {
   title: string;
   description: string;
   stage: Stage;
+  position: number;
 }

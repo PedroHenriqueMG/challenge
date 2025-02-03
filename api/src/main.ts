@@ -21,7 +21,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Energia Docs')
+    .setTitle('Tasks Api Docs')
     .setVersion('1.0')
     .build();
 
