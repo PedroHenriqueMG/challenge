@@ -1,4 +1,4 @@
-FROM node:20.18.2-alpine
+FROM node:20.18.2-alpine as build-stage
 
 WORKDIR /web
 
@@ -10,6 +10,17 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5173
+RUN npm run build
 
-ENTRYPOINT ["sh", "-c", "npm run dev"]
+
+FROM nginx:alpine
+
+WORKDIR /usr/share/nginx/html
+
+RUN rm -rf ./*
+
+COPY --from=build-stage /web/dist .
+
+EXPOSE 80
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
