@@ -21,6 +21,4 @@ RUN rm -rf ./*
 
 COPY --from=build-stage /web/dist .
 
-EXPOSE 80
-
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

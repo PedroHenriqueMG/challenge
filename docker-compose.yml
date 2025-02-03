@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres
+    container_name: task-db
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: banco
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docker -d banco"]
+      interval: 15s
+      timeout: 5s
+    networks:
+      - app-network
+
+  api:
+    build: ./api
+    container_name: api-tasks
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 3333:3333
+    env_file:
+      - ./api/.env
+    volumes:
+      - .:/api-tasks
+    networks:
+      - app-network
+
+  web:
+    build: ./web
+    container_name: web-tasks
+    ports:
+      - 5173:80
+    env_file:
+      - ./web/.env
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
